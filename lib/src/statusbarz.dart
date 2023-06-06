@@ -121,24 +121,51 @@ class Statusbarz {
         }
 
         final avgLuminance = luminance / pixels;
+        final firstPixel =
+            bitmap!.getPixel(0, mediaQuery.size.height.toInt() - 1);
+        final red = firstPixel.r.toInt();
+        final green = firstPixel.g.toInt();
+        final blue = firstPixel.b.toInt();
+        final alpha = firstPixel.a.toInt();
+        final color = Color.fromARGB(alpha, red, green, blue);
+
+        final statusBarIconBrightness = (firstPixel.luminance / 255) < 0.5
+            ? Brightness.light
+            : Brightness.dark;
 
         /// Updates status bar color
         if (avgLuminance > 0.5) {
-          setDarkStatusBar();
+          setDarkStatusBar(color, statusBarIconBrightness);
         } else {
-          setLightStatusBar();
+          setLightStatusBar(color, statusBarIconBrightness);
         }
       },
     );
   }
 
   /// Changes the text and icon color on the statusbar to a dark color
-  void setDarkStatusBar() {
-    SystemChrome.setSystemUIOverlayStyle(theme.darkStatusBar);
+  void setDarkStatusBar([
+    Color? navigationBarColor,
+    Brightness? statusBarIconBrightness,
+  ]) {
+    SystemChrome.setSystemUIOverlayStyle(
+      theme.darkStatusBar.copyWith(
+        systemNavigationBarColor: navigationBarColor,
+        systemNavigationBarIconBrightness: statusBarIconBrightness,
+      ),
+    );
   }
 
   /// Changes the text and icon color on the statusbar to a light color
-  void setLightStatusBar() {
-    SystemChrome.setSystemUIOverlayStyle(theme.lightStatusBar);
+  void setLightStatusBar([
+    Color? navigationBarColor,
+    Brightness? statusBarIconBrightness,
+  ]) {
+    SystemChrome.setSystemUIOverlayStyle(
+      theme.lightStatusBar.copyWith(
+        systemNavigationBarColor: navigationBarColor,
+        systemNavigationBarIconBrightness: statusBarIconBrightness,
+      ),
+    );
   }
 }
